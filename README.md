@@ -7,7 +7,7 @@
 ```bash
 # build for rpi3
 make build-rpi3
-```l
+```
 
 ## Deploy
 
