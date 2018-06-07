@@ -31,6 +31,13 @@ cat "${crontab_schedule}" | grep -v '^\s*#' | grep -v '^\s*$' \
 	| awk '{print "https://cronexpressiondescriptor.azurewebsites.net/api/descriptor/?expression="$1"+"$2"+"$3"+"$4"+"$5"&locale=en-US"}' \
 	| xargs curl -s | sed -r 's/\{"description":"([^"]+)"\}/\1\n/g'
 
-# start cron in foreground
-/usr/sbin/crond -f
+# start dcron service
+if [ "${INITSYSTEM}" != "on" ]
+then
+	# start dcron in foreground
+	/usr/sbin/crond -f
+else
+	# start dcron with openrc
+	rc-service dcron start
+fi
 

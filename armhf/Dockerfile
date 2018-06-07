@@ -10,6 +10,9 @@ LABEL maintainer="kylemharding@gmail.com"
 # allow building on x86
 RUN [ "cross-build-start" ]
 
+# enable openrc
+ENV INITSYSTEM on
+
 # set snapshot root
 ENV SNAPSHOT_ROOT /snapshots
 
