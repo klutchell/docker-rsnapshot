@@ -1,37 +1,38 @@
-NS		:= klutchell
-REPO	:= rsnapshot
-TAG		:= $$(git rev-parse --short HEAD)
-IMG		:= ${NS}/${REPO}
+
+DOCKER_REPO		:= klutchell/rsnapshot
+ARCH			:= armhf
+VERSION			:= $$(cat ./VERSION)
+BUILD_DATE		:= $$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+IMAGE_NAME		:= ${DOCKER_REPO}:${ARCH}-${VERSION}
+DOCKERFILE_PATH	:= ./${ARCH}/Dockerfile
+
+.DEFAULT_GOAL	:= build
+
+bump:
+	@docker run --rm -v "${PWD}":/app treeder/bump patch
 
 build:
-	@docker build -t ${IMG}:${TAG} .
-	@docker tag ${IMG}:${TAG} ${IMG}:latest
-
-build-rpi3:
-	@docker build -t ${IMG}:rpi3-${TAG} -f Dockerfile.rpi3 .
-	@docker tag ${IMG}:rpi3-${TAG} ${IMG}:rpi3-latest
+	@docker build \
+	--build-arg "VERSION=${VERSION}" \
+	--build-arg "BUILD_DATE=${BUILD_DATE}" \
+	--tag ${IMAGE_NAME} \
+	--file ${DOCKERFILE_PATH} \
+	.
 
 build-nc:
-	@docker build --no-cache -t ${IMG} .
-	@docker tag ${IMG}:${TAG} ${IMG}:latest
+	@docker build --no-cache
+	--build-arg "VERSION=${VERSION}" \
+	--build-arg "BUILD_DATE=${BUILD_DATE}" \
+	--tag ${IMAGE_NAME} \
+	--file ${DOCKERFILE_PATH} \
+	.
 
-build-rpi3-nc:
-	@docker build --no-cache -t ${IMG}:rpi3-${TAG} -f Dockerfile.rpi3 .
-	@docker tag ${IMG}:rpi3-${TAG} ${IMG}:rpi3-latest
+tag:
+	@git tag ${VERSION} -m "tagging build ${VERSION}"
+	git push --tags
 
 push:
-	@docker push ${IMG}:${TAG}
-	@docker push ${IMG}:latest
+	docker push ${IMAGE_NAME}
 
-push-rpi3:
-	@docker push ${IMG}:rpi3-${TAG}
-	@docker push ${IMG}:rpi3-latest
-
-release: build tag push
-
-release-rpi3: build-rpi3 push-rpi3
-
-rpi3: build-rpi3
-
-default: build
+release: bump build push
 

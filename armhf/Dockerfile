@@ -1,5 +1,10 @@
 FROM resin/raspberrypi3-alpine:3.6
 
+ARG BUILD_DATE
+ARG VERSION=latest
+
+LABEL build_version="${VERSION}"
+LABEL build_date="${BUILD_DATE}"
 LABEL maintainer="kylemharding@gmail.com"
 
 # allow building on x86
@@ -17,8 +22,9 @@ RUN apk add --no-cache \
 	tzdata
 
 # copy src files
-COPY . /usr/src/app/
+# copy src files
 WORKDIR /usr/src/app
+COPY start.sh crontab VERSION ./
 
 # modify default config with desired settings
 RUN sed -r \
