@@ -22,7 +22,6 @@ RUN apk add --no-cache \
 	tzdata
 
 # copy src files
-# copy src files
 WORKDIR /usr/src/app
 COPY start.sh crontab VERSION ./
 
