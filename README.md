@@ -5,18 +5,16 @@
 ## Build
 
 ```bash
-# build for rpi3
-make build-rpi3
+make build ARCH=armhf
 ```
 
 ## Deploy
 
 ```bash
-# deploy on rpi3
 docker run --name rsnapshot \
 --privileged \
 -e TZ=America/Toronto \
-klutchell/rsnapshot:rpi3-latest
+klutchell/rsnapshot:armhf-latest
 ```
 
 ## Parameters
@@ -40,7 +38,6 @@ mkfs.ext4 /dev/sda1 -L snapshots
 prefixed with `RSNAPSHOT_CONF_`
 
 ```bash
-# deploy on rpi3
 docker run --name rsnapshot \
 --privileged \
 -e TZ=America/Toronto \
@@ -50,7 +47,7 @@ docker run --name rsnapshot \
 -e RSNAPSHOT_CONF_pi="backup pi@192.168.1.101:/home/ 192.168.1.101/" \
 -e RSNAPSHOT_CONF_ex1="exclude media/movies" \
 -e RSNAPSHOT_CONF_ex2="exclude media/tv" \
-klutchell/rsnapshot:rpi3-latest
+klutchell/rsnapshot:armhf-latest
 ```
 
 * adjust the schedules in `/usr/src/app/crontab`
