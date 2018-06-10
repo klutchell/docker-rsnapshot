@@ -1,7 +1,7 @@
 #!/bin/sh
 
-rsnapshot_config="rsnapshot.conf"
-crontab_schedule="crontab"
+rsnapshot_config="/usr/src/app/rsnapshot.conf"
+crontab_schedule="/usr/src/app/crontab"
 
 part_label="snapshots"
 dev_path="$(blkid | grep "LABEL=\"${part_label}\"" | cut -d: -f1)"
