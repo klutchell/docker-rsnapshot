@@ -40,7 +40,7 @@ fi
 echo "updating rsnapshot config ..."
 printenv | grep "^RSNAPSHOT_CONF_" | while IFS== read -r var val
 do
-	printf "#$var\n$val" | sed -r 's/\s+/\t/g' | tee -a "${rsnapshot_config}"
+	echo -e "#$var\n$val" | sed -r 's/\s+/\t/g' | tee -a "${rsnapshot_config}"
 done
 
 # test rsnapshot config syntax
