@@ -33,15 +33,17 @@ then
 		-e "s/^#?(backup_script\s+.+)$/#\1/" \
 		/etc/rsnapshot.conf.default > "${rsnapshot_config}"
 else
-	sed -i -e '/#RSNAPSHOT_CONF_/,+2d' "${rsnapshot_config}"
+	sed -i -e '/#RSNAPSHOT_CONF_START/,/#RSNAPSHOT_CONF_END/ {d}' "${rsnapshot_config}"
 fi
 
 # append RSNAPSHOT_CONF_* environment variables to rsnapshot.conf
 echo "updating rsnapshot config ..."
+echo "#RSNAPSHOT_CONF_START" >> "${rsnapshot_config}"
 printenv | grep "^RSNAPSHOT_CONF_" | while IFS== read -r var val
 do
-	echo -e "#$var\n$val" | sed -r 's/\s+/\t/g' | tee -a "${rsnapshot_config}"
+	echo "$val" | sed -r 's/\s+/\t/g' | tee -a "${rsnapshot_config}"
 done
+echo "#RSNAPSHOT_CONF_END" >> "${rsnapshot_config}"
 
 # test rsnapshot config syntax
 echo "checking rsnapshot config ..."
